@@ -8,6 +8,12 @@ import numpy as np
 import scipy as sp
 from PIL import Image
 from scipy import misc
+import cv2
+import glob
+import tensorflow as tf
+from progressbar import ProgressBar
+
+# pbar = ProgressBar()
 
 
 def loadDataset(folder):
@@ -78,3 +84,16 @@ def imresize(np_image, new_dims):
     new_height, new_width = new_dims
     im = im.resize((new_width, new_height), Image.ANTIALIAS)
     return np.array(im)
+
+
+def loadImages(path, size=(320, 192)):
+    X_data = []
+    files = glob.glob(path)
+
+    print("extracting {} files from ".format(len(files))+path)
+
+    for myFile in files:
+        image = cv2.imread(myFile)
+        X_data.append(tf.cast(imresize(image, size), tf.float32))
+
+    return np.array(X_data)
