@@ -41,6 +41,7 @@ class ImageReconstruction:
         self.level = level
         self.weighted_fusion = weighted_fusion
 
+
     def downsample(self,x,outchannels,filtersize):
         """
         Downsample the input tensors

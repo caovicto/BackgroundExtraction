@@ -5,8 +5,9 @@ Loading images and datasets
 """
 
 import numpy as np
+import random
 import scipy as sp
-from PIL import Image
+from PIL import Image, ImageOps
 from scipy import misc
 import cv2
 import glob
@@ -24,6 +25,7 @@ def loadDataset(folder):
     :return:
     :rtype:
     """
+    pass
 
 
 def imread(filename):
@@ -98,14 +100,69 @@ def loadImages(path, size=(320, 192)):
 
     return np.array(X_data)
 
+
 def transform(img):
     #################
     # TODO: homography transform img to create 4 other images
     ##############
-    pass
+    translate = np.array([
+        [1, 0, random.uniform(-0.05, 0.05)],
+        [0, 1, random.uniform(-0.05, 0.05)],
+        [0, 0, 1]
+    ])
 
-def addOcclusion(img, occclusion):
-    #################
-    # TODO: homography transform img to create 4 other images
-    ##############
-    pass
+    rotate = np.array([
+        [np.cos(random.uniform(0, 0.05)), -np.sin(random.uniform(0, 0.05)), 0],
+        [np.sin(random.uniform(0, 0.05)), np.cos(random.uniform(0, 0.05)), 0],
+        [0, 0, 1]
+    ])
+
+    shear = np.array([
+        [1, random.uniform(-0.05, 0.05), 0],
+        [random.uniform(-0.05, 0.05), 1, 0],
+        [0, 0, 1]
+    ])
+
+    Homography = translate.dot(rotate).dot(shear)
+
+    warped_img = cv2.warpPerspective(img, Homography, img.shape[1::-1])
+    # cv2.imshow('Warped Image', warped_img)
+    # cv2.waitKey(0)
+    return warped_img
+
+
+def generate_dataset(dataFolder, occFolder):
+    occList = glob.glob('{}/*.png'.format(occFolder))
+    filelist = glob.glob('{}/*/*.jpg'.format(dataFolder))
+
+    for infile in filelist:
+        generate_frames(infile, random.choice(occList), dataFolder)
+
+
+def generate_frames(imgPath, occPath, newPath, shape=(360, 640), num=5):
+    file = imgPath.split('/')[-1]
+    name = file.split('.')[0]
+
+    for i in range(num):
+        homographyPath = "{}/{}_f{}.png".format(newPath, name, i)
+        save_homography(imgPath, shape, homographyPath)
+        save_overlay(homographyPath, occPath, homographyPath)
+
+
+def save_homography(file, shape, save):
+    img = cv2.imread(file)
+    newImg = transform(img)
+    newImg = cv2.resize(newImg, (0,0), fx=2, fy=2)
+    newImg = newImg[int(shape[0]*0.5):int(shape[0]*1.5), int(shape[1]*0.5):int(shape[1]*1.5)]
+
+    cv2.imwrite(save, newImg)
+    return newImg
+
+
+def save_overlay(bg_file, fg_file, save):
+    bg = Image.open(bg_file).convert('RGB')
+    fg = Image.open(fg_file).convert('RGBA')
+    fg = ImageOps.fit(fg, bg.size)
+
+    bg.paste(fg, (0, 0), mask=fg)
+    bg.save(save)
