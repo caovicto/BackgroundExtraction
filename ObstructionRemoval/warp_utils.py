@@ -24,12 +24,12 @@ Notes:
 
 from __future__ import absolute_import, division, print_function
 
-from tensorflow.python.framework import constant_op
-from tensorflow.python.framework import dtypes
-from tensorflow.python.framework import ops
+#from tensorflow.python.framework import constant_op
+#from tensorflow.python.framework import dtypes
+#from tensorflow.python.framework import ops
 
-from tensorflow.python.ops import array_ops
-from tensorflow.python.ops import math_ops
+#from tensorflow.python.ops import array_ops
+#from tensorflow.python.ops import math_ops
 
 
 def _interpolate_bilinear(grid,

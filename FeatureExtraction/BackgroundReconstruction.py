@@ -1,5 +1,6 @@
 import torch
 from torch import nn
+import numpy as np
 from ObstructionRemoval import warp_utils
 
 def create_outgoing_mask(flow):
@@ -9,20 +10,21 @@ def create_outgoing_mask(flow):
     :return: The mask
     """
     #gets the desired dimensions
-    num_batch,height,width,_ = torch.unbind(flow.shape)
+    num_batch,height,width,_ = flow.shape
 
     #create the x grid and y grid to construct the mask on
-    gridx = torch.reshape(torch.range(0,width),[1,1,width])
-    gridx = torch.tile(gridx,[num_batch,height,1])
-    gridy = torch.reshape(torch.range(height, 0), [1, height, 1])
-    gridy = torch.tile(gridy, [num_batch, 1, width])
+    gridx = torch.reshape(torch.range(0,width-1),[1,1,width])
+    gridx = torch.from_numpy(np.tile(gridx,[num_batch,height,1]))
+    gridy = torch.reshape(torch.range(0, height-1), [1, height, 1])
+    gridy = torch.from_numpy(np.tile(gridy, [num_batch, 1, width]))
 
     #create the mask
     flowu,flowv = torch.unbind(flow,3)[0:2]
     posx = gridx.float()+flowu
     posy = gridy.float()+flowv
-    insidex = torch.logical_and(posx <= (width-1).type(torch.FloatTensor),posx >= 0)
-    insidey = torch.logical_and(posy <= (height-1).type(torch.FloatTensor),posy >= 0)
+    #insidex = torch.logical_and(posx <= (width-1).type(torch.FloatTensor),posx >= 0)
+    insidex = torch.logical_and(posx <= (width-1),posx >= 0)
+    insidey = torch.logical_and(posy <= (height-1),posy >= 0)
     inside = torch.logical_and(insidex,insidey)
     return torch.unsqueeze(inside.type(torch.FloatTensor),3)
 
@@ -90,13 +92,18 @@ class ImageReconstruction:
         :param level: The level that we are running the network at
         :return: The background and the alpha map
         """
-        b,h,w,_ = torch.unbind(image_2.shape)
+        #b,h,w,_ = torch.unbind(image_2.shape)
+        b,h,w,_ = image_2.shape
 
         #warp registered background images
-        registered_background_20 = self.warp(image_0,flow20,b,h,w,3)
-        registered_background_21 = self.warp(image_1,flow21,b,h,w,3)
-        registered_background_23 = self.warp(image_3,flow23,b,h,w,3)
-        registered_background_24 = self.warp(image_4,flow24,b,h,w,3)
+        #registered_background_20 = self.warp(image_0,flow20,b,h,w,3)
+        #registered_background_21 = self.warp(image_1,flow21,b,h,w,3)
+        #registered_background_23 = self.warp(image_3,flow23,b,h,w,3)
+        #registered_background_24 = self.warp(image_4,flow24,b,h,w,3)
+        registered_background_20 = image_0
+        registered_background_21 = image_1
+        registered_background_23 = image_3
+        registered_background_24 = image_4
 
         #outgoing mask
         outgoing_mask_20 = create_outgoing_mask(flow20)
