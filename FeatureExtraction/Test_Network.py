@@ -10,11 +10,11 @@ from Models.Decomposition_Net import Decomp_Net_Translation
 batch_size = 1
 #read in images
 ### needs to be finished ###
-I0 = cv2.imread("SyntheticDataset/Places365_val_00000969/Places365_val_00000969_f0.png").astype(np.float32)[...,:-1]/255.0
-I1 = cv2.imread("SyntheticDataset/Places365_val_00000969/Places365_val_00000969_f1.png").astype(np.float32)[...,:-1]/255.0
-I2 = cv2.imread("SyntheticDataset/Places365_val_00000969/Places365_val_00000969_f2.png").astype(np.float32)[...,:-1]/255.0
-I3 = cv2.imread("SyntheticDataset/Places365_val_00000969/Places365_val_00000969_f3.png").astype(np.float32)[...,:-1]/255.0
-I4 = cv2.imread("SyntheticDataset/Places365_val_00000969/Places365_val_00000969_f4.png").astype(np.float32)[...,:-1]/255.0
+I0 = cv2.imread("../Files/SyntheticDataset/Places365_val_00000969/Places365_val_00000969_f0.png").astype(np.float32)[..., :-1] / 255.0
+I1 = cv2.imread("../Files/SyntheticDataset/Places365_val_00000969/Places365_val_00000969_f1.png").astype(np.float32)[..., :-1] / 255.0
+I2 = cv2.imread("../Files/SyntheticDataset/Places365_val_00000969/Places365_val_00000969_f2.png").astype(np.float32)[..., :-1] / 255.0
+I3 = cv2.imread("../Files/SyntheticDataset/Places365_val_00000969/Places365_val_00000969_f3.png").astype(np.float32)[..., :-1] / 255.0
+I4 = cv2.imread("../Files/SyntheticDataset/Places365_val_00000969/Places365_val_00000969_f4.png").astype(np.float32)[..., :-1] / 255.0
 Original_H = I0.shape[0]
 Original_W = I0.shape[1]
 Resized_H = int(np.ceil(float(Original_H)*1/16.0))*16
