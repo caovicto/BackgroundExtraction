@@ -125,32 +125,39 @@ class ImageReconstruction:
                                     registered_background_24,outgoing_mask_24,diff_24],-1)
 
         #actual network
-        x = torch.cat(B_registered,axis=3)
-        nn.Conv2d.weight = x
-        x = nn.Conv2d(x.shape,128,(3,3))
+        #x = torch.cat(B_registered,dim=3)
+        x = torch.cat([image_2B, alpha, image_2,
+                   registered_background_20, outgoing_mask_20, diff_20,
+                   registered_background_21, outgoing_mask_21, diff_21,
+                   registered_background_23, outgoing_mask_23, diff_23,
+                   registered_background_24, outgoing_mask_24, diff_24], 3)
+
+        print("running network")
+        #nn.Conv2d.weight = x
+        m = nn.Conv2d(x.shape[1],128,(3,3))
         m = nn.LeakyReLU(.1)
-        x = m(x)
-        nn.Conv2d.weight = x
-        x = nn.Conv2d(x.shape, 128, (3, 3))
+        #x = m(x)
+        #nn.Conv2d.weight = x
+        m = nn.Conv2d(x.shape[1], 128, (3, 3))
         m = nn.LeakyReLU(.1)
-        x = m(x)
-        nn.Conv2d.weight = x
-        x = nn.Conv2d(x.shape, 96, (3, 3))
+        #x = m(x)
+        #nn.Conv2d.weight = x
+        m = nn.Conv2d(x.shape[1], 96, (3, 3))
         m = nn.LeakyReLU(.1)
-        x = m(x)
-        nn.Conv2d.weight = x
-        x = nn.Conv2d(x.shape, 64, (3, 3))
+        #x = m(x)
+        #nn.Conv2d.weight = x
+        m = nn.Conv2d(x.shape[1], 64, (3, 3))
         m = nn.LeakyReLU(.1)
-        x = m(x)
-        nn.Conv2d.weight = x
-        x = nn.Conv2d(x.shape, 32, (3, 3))
+        #x = m(x)
+        #nn.Conv2d.weight = x
+        m = nn.Conv2d(x.shape[1], 32, (3, 3))
         m = nn.LeakyReLU(.1)
         x = m(x)
 
         #if weighted network, then add in a softmax layer.
         #else, have one more convolutional layer
         if self.weighted_fusion:
-            nn.Conv2d.weight = x
+            #nn.Conv2d.weight = x
             x = nn.Conv2d(5,3,(1,1))
             weights = torch.nn.Softmax(-1)
             img_diff_0 = registered_background_20 - image_2B
@@ -160,7 +167,7 @@ class ImageReconstruction:
             output_B = image_2B + (weights[...,0:1]*img_diff_0+weights[...,1:2]*img_diff_1+weights[...,2:3]*img_diff_3+weights[...,3:4]*img_diff_4)
             return output_B,alpha+x[...,4:5]
         else:
-            nn.Conv2d.weight = x
+            #nn.Conv2d.weight = x
             x = nn.Conv2d(4,3,(1,1))
             return image_2B+x[...,0:3],alpha+x[...,3:4]
 
