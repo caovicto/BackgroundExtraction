@@ -572,7 +572,7 @@ def test_train(train=False):
             loss += compute_loss(FB04_, FB14_, FB24_, FB34_,
                                  torch.clamp(B_pred[i][..., 12:15], 0.0, 1.0), torch.clamp(A_pred[i][..., 12:15], 0.0, 1.0),
                                  I4lvl, I0lvl, I1lvl, I2lvl, I3lvl)
-        return loss, model0.parameters()
+        return loss, model0
 
 
 
@@ -639,8 +639,10 @@ def test_train(train=False):
 
 def train():
     learning_rate = 0.0001
-    loss,model_params = test_train(True)
-    optimizer = torch.optim.Adam(model_params, lr=learning_rate)
+    device = "cuda" if torch.cuda.is_available() else "cpu"  # Configure device
+    loss,model = test_train(True)
+    model = model.to(device)
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     num_steps = 1001
 
     for i in range(0, num_steps):
@@ -653,3 +655,5 @@ def test():
     B2 = test_train(False)
     plt.imshow(B2)
     plt.show()
+
+
