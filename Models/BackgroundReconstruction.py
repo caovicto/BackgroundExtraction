@@ -29,8 +29,8 @@ def create_outgoing_mask(flow):
     inside = torch.logical_and(insidex,insidey)
     return torch.unsqueeze(inside.type(torch.FloatTensor),3)
 
-class ImageReconstruction:
-    def __init__(self,batch_size,CROP_PATCH_H,CROP_PATCH_W,level=4,weighted_fusion=True):
+class ImageReconstruction(nn.Module):
+    def __init__(self, batch_size, CROP_PATCH_H, CROP_PATCH_W, level=4, weighted_fusion=True):
         """
         :param batch_size: size of the batche
         :param CROP_PATCH_H: height of the patch that is being cropped
@@ -38,6 +38,7 @@ class ImageReconstruction:
         :param level: the level that we are working at
         :param weighted_fusion: is this network weighted or not
         """
+        super().__init__()
         self.batch_size = batch_size
         self.CROP_PATCH_H = CROP_PATCH_H
         self.CROP_PATCH_W = CROP_PATCH_W
