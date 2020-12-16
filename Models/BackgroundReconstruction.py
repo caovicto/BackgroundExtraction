@@ -29,8 +29,8 @@ def create_outgoing_mask(flow):
     inside = torch.logical_and(insidex,insidey)
     return torch.unsqueeze(inside.type(torch.FloatTensor),3)
 
-class ImageReconstruction:
-    def __init__(self,batch_size,CROP_PATCH_H,CROP_PATCH_W,level=4,weighted_fusion=True):
+class ImageReconstruction(nn.Module):
+    def __init__(self, batch_size, CROP_PATCH_H, CROP_PATCH_W, level=4, weighted_fusion=True):
         """
         :param batch_size: size of the batche
         :param CROP_PATCH_H: height of the patch that is being cropped
@@ -38,6 +38,7 @@ class ImageReconstruction:
         :param level: the level that we are working at
         :param weighted_fusion: is this network weighted or not
         """
+        super().__init__()
         self.batch_size = batch_size
         self.CROP_PATCH_H = CROP_PATCH_H
         self.CROP_PATCH_W = CROP_PATCH_W
@@ -97,14 +98,14 @@ class ImageReconstruction:
         b,h,w,_ = image_2.shape
 
         #warp registered background images
-        #registered_background_20 = self.warp(image_0,flow20,b,h,w,3)
-        #registered_background_21 = self.warp(image_1,flow21,b,h,w,3)
-        #registered_background_23 = self.warp(image_3,flow23,b,h,w,3)
-        #registered_background_24 = self.warp(image_4,flow24,b,h,w,3)
-        registered_background_20 = image_0
-        registered_background_21 = image_1
-        registered_background_23 = image_3
-        registered_background_24 = image_4
+        registered_background_20 = self.warp(image_0,flow20,b,h,w,3)
+        registered_background_21 = self.warp(image_1,flow21,b,h,w,3)
+        registered_background_23 = self.warp(image_3,flow23,b,h,w,3)
+        registered_background_24 = self.warp(image_4,flow24,b,h,w,3)
+        #registered_background_20 = image_0
+        #registered_background_21 = image_1
+        #registered_background_23 = image_3
+        #registered_background_24 = image_4
 
         #outgoing mask
         outgoing_mask_20 = create_outgoing_mask(flow20)

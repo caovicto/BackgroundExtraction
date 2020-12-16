@@ -1,4 +1,5 @@
 import torch
+from torch import nn
 import numpy as np
 from torch.nn import functional
 import torchvision
@@ -28,8 +29,9 @@ def create_outgoing_mask(flow):
     insidey = torch.logical_and(posy <= (height-1),posy >= 0)
     inside = torch.logical_and(insidex,insidey)
     return torch.unsqueeze(inside.type(torch.FloatTensor),3)
-class Decomp_Net_Translation:
-    def __init__(self,H,W,use_Homography,is_training,use_BN=False):
+class Decomp_Net_Translation(nn.Module):
+    def __init__(self, H, W, use_Homography, is_training, use_BN=False):
+        super().__init__()
         self.lvl = 4
         self.filters = [16,32,64,96]
         self.s_range = 4
