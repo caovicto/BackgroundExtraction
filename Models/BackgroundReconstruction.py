@@ -133,23 +133,23 @@ class ImageReconstruction:
                    registered_background_24, outgoing_mask_24, diff_24], 3)
 
         print("running network")
-        #nn.Conv2d.weight = x
+        nn.Conv2d.weight = x
         m = nn.Conv2d(x.shape[1],128,(3,3))
         m = nn.LeakyReLU(.1)
-        #x = m(x)
-        #nn.Conv2d.weight = x
+        x = m(x)
+        nn.Conv2d.weight = x
         m = nn.Conv2d(x.shape[1], 128, (3, 3))
         m = nn.LeakyReLU(.1)
-        #x = m(x)
-        #nn.Conv2d.weight = x
+        x = m(x)
+        nn.Conv2d.weight = x
         m = nn.Conv2d(x.shape[1], 96, (3, 3))
         m = nn.LeakyReLU(.1)
-        #x = m(x)
-        #nn.Conv2d.weight = x
+        x = m(x)
+        nn.Conv2d.weight = x
         m = nn.Conv2d(x.shape[1], 64, (3, 3))
         m = nn.LeakyReLU(.1)
-        #x = m(x)
-        #nn.Conv2d.weight = x
+        x = m(x)
+        nn.Conv2d.weight = x
         m = nn.Conv2d(x.shape[1], 32, (3, 3))
         m = nn.LeakyReLU(.1)
         x = m(x)
