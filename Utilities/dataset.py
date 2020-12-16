@@ -143,8 +143,6 @@ def generate_frames(imgPath, occPath, newPath, shape=(360, 640), num=5):
     file = imgPath.split('/')[-1]
     name = file.split('.')[0]
 
-    print(newPath)
-
     for i in range(num):
         homographyGtPath = "{}/{}/{}_gt{}.png".format(newPath, name, name, i)
         homographyOccPath = "{}/{}/{}_f{}.png".format(newPath, name, name, i)
@@ -159,7 +157,6 @@ def save_homography(file, shape, save):
     newImg = newImg[int(shape[0]*0.5):int(shape[0]*1.5), int(shape[1]*0.5):int(shape[1]*1.5)]
 
     cv2.imwrite(save, newImg)
-    print(save)
     return newImg
 
 
